@@ -86,19 +86,7 @@ class App {
                         if (child.material.map) {
                             child.material.map.encoding = THREE.sRGBEncoding;
                             child.material.needsUpdate = true;
-                        } else {
-                            // Apply colored materials based on mesh name or position
-                            if (child.name.toLowerCase().includes('bun')) {
-                                child.material = bunMaterial;
-                            } else if (child.name.toLowerCase().includes('lettuce')) {
-                                child.material = lettuceMaterial;
-                            } else if (child.name.toLowerCase().includes('meat') || 
-                                     child.name.toLowerCase().includes('patty')) {
-                                child.material = meatMaterial;
-                            } else if (child.name.toLowerCase().includes('tomato')) {
-                                child.material = tomatoMaterial;
-                            }
-                        }
+                        } 
                         
                         // Enable shadows
                         child.castShadow = true;
