@@ -68,11 +68,11 @@ class App{
         this.hitTestSource = null;
         
         function onSelect() {
-            if (self.chair===undefined) return;
+            if (self.pancake===undefined) return;
             
             if (self.reticle.visible){
-                self.chair.position.setFromMatrixPosition( self.reticle.matrix );
-                self.chair.visible = true;
+                self.pancake.position.setFromMatrixPosition( self.reticle.matrix );
+                self.pancake.visible = true;
             }
         }
 
@@ -106,7 +106,7 @@ class App{
         } );
     }
     
-	showChair(id){
+	showpancake(id){
         this.initAR();
         
 		const loader = new GLTFLoader( ).setPath(this.assetsPath);
@@ -122,9 +122,9 @@ class App{
 			function ( gltf ) {
 
 				self.scene.add( gltf.scene );
-                self.chair = gltf.scene;
+                self.pancake = gltf.scene;
         
-                self.chair.visible = false; 
+                self.pancake.visible = false; 
                 
                 self.loadingBar.visible = false;
                 
@@ -169,9 +169,9 @@ class App{
 
             currentSession = null;
             
-            if (self.chair !== null){
-                self.scene.remove( self.chair );
-                self.chair = null;
+            if (self.pancake !== null){
+                self.scene.remove( self.pancake );
+                self.pancake = null;
             }
             
             self.renderer.setAnimationLoop( null );
