@@ -70,7 +70,7 @@ class App {
         });
 
         loader.load(
-            'burger.glb',
+            'pancake.glb',
             (gltf) => {
                 this.scene.add(gltf.scene);
                 this.model = gltf.scene;
