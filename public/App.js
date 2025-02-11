@@ -1,4 +1,4 @@
-import * as THREE from '/libs/three125/three.module.js'; 
+import * as THREE from '/libs/three125/three.module.js';
 import { GLTFLoader } from '/libs/three/jsm/GLTFLoader.js';
 import { RGBELoader } from '/libs/three/jsm/RGBELoader.js';
 
@@ -8,20 +8,17 @@ class App {
         document.body.appendChild(container);
 
         this.assetsPath = '/assets/ar-shop/';
+        this.pancake = null;
 
         this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
-        this.camera.position.set(0, 1.6, 0);
-
         this.scene = new THREE.Scene();
 
         const ambient = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
-        ambient.position.set(0.5, 1, 0.25);
         this.scene.add(ambient);
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.outputEncoding = THREE.sRGBEncoding;
         this.renderer.xr.enabled = true;
         container.appendChild(this.renderer.domElement);
 
@@ -30,6 +27,8 @@ class App {
         this.initAR();
 
         window.addEventListener('resize', this.resize.bind(this));
+
+        this.renderer.setAnimationLoop(this.render.bind(this)); // Continuous rendering
     }
 
     resize() {
@@ -55,19 +54,27 @@ class App {
     loadModel() {
         const loader = new GLTFLoader().setPath(this.assetsPath);
         loader.load('pancake.glb', (gltf) => {
-            this.scene.add(gltf.scene);
             this.pancake = gltf.scene;
             this.pancake.position.set(0, 0, -2); // Adjust position if needed
+            this.scene.add(this.pancake);
         }, undefined, (error) => {
             console.error('Error loading model:', error);
         });
     }
 
-    initAR() {
-        navigator.xr.requestSession('immersive-ar', { requiredFeatures: ['local-floor'] }).then((session) => {
+    async initAR() {
+        if (!navigator.xr) {
+            console.error("WebXR not supported on this device.");
+            return;
+        }
+
+        try {
+            const session = await navigator.xr.requestSession('immersive-ar', { requiredFeatures: ['local-floor'] });
             this.renderer.xr.setReferenceSpaceType('local');
             this.renderer.xr.setSession(session);
-        }).catch(console.error);
+        } catch (error) {
+            console.error("Failed to start AR session:", error);
+        }
     }
 
     render() {
