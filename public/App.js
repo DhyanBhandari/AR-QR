@@ -14,16 +14,18 @@ class App {
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         this.renderer.xr.enabled = true;
-        
+
         this.loadModel();
-        this.initAR(); // Start AR immediately
+
+        // Delay AR session start until user interaction (fix for permissions issue)
+        document.addEventListener('click', () => this.initAR(), { once: true });
     }
 
     loadModel() {
         const loader = new GLTFLoader().setPath(this.assetsPath);
         loader.load('pancake.glb', (gltf) => {
             this.pancake = gltf.scene;
-            this.pancake.scale.set(1, 1, 1); // Adjust if needed
+            this.pancake.scale.set(1, 1, 1);
             this.scene.add(this.pancake);
         }, undefined, (error) => {
             console.error('Error loading model:', error);
@@ -32,7 +34,7 @@ class App {
 
     async initAR() {
         if (!navigator.xr) {
-            console.error("WebXR not supported on this device.");
+            alert("WebXR not supported on this device.");
             return;
         }
 
@@ -52,6 +54,7 @@ class App {
             this.renderer.setAnimationLoop(this.render.bind(this));
         } catch (error) {
             console.error("Failed to start AR session:", error);
+            alert("AR session failed to start. Please ensure permissions are granted.");
         }
     }
 
